@@ -3,6 +3,7 @@ package util;
 import graphics.Window;
 import org.lwjgl.glfw.GLFWErrorCallback;
 import scene.SceneManager;
+import util.safety.Preconditions;
 
 import static org.lwjgl.glfw.GLFW.glfwInit;
 
@@ -58,7 +59,7 @@ public final class Engine {
     }
 
     public static void showWindow() {
-        window().showWindow();
+        Preconditions.nonNull("window", window()).showWindow();
     }
 
     public static SceneManager scenes() {
@@ -67,6 +68,10 @@ public final class Engine {
 
     //internal method called before any init
     private static void preInit() {
+
+        //ensure that the Engine is running on main thread
+        Preconditions.ensureMainThread("engine initialization");
+
         GLFWErrorCallback.createPrint(System.err).set();
 
         if (!glfwInit())
