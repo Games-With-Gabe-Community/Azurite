@@ -5,8 +5,8 @@ import graphics.Camera;
 import graphics.Color;
 import graphics.Texture;
 import org.joml.Vector2f;
-import physics.AABB;
 import physics.Transform;
+import physics.collision.Shapes;
 import postprocess.BloomEffect;
 import postprocess.PostProcessStep;
 import scene.Scene;
@@ -47,12 +47,13 @@ public class DemoTopDown extends Scene {
 
         booper = new GameObject(this, "Booper", new Transform(800, 800, 100, 100), 2);
         booper.addComponent(new Animation(1, a.getSprite(132), a.getSprite(150)));
-        booper.addComponent(new CollisionTrigger(data -> System.out.println("Boop")));
         booper.addComponent(new PointLight(new Color(255, 153, 102), 30));
+
+        //TODO edit for new collision system
 
         player = new GameObject(this, "Player", new Transform(600, 600, 100, 100), 2);
         player.addComponent(new PointLight(new Color(250, 255, 181), 30));
-        player.addComponent(new AABB());
+        player.addComponent(new RigidBody(Shapes.axisAlignedRectangle(0,0, 100, 100), 1));
         player.addComponent(new SpriteRenderer(a.getSprite(132)));
         player.addComponent(new CharacterController());
 
@@ -69,7 +70,7 @@ public class DemoTopDown extends Scene {
         booper.getComponent(PointLight.class).intensity = Utils.map((float) Math.cos(Engine.millisRunning() / 600), -1, 1, 70, 110);
         greenLight.getComponent(PointLight.class).intensity = Utils.map((float) Math.cos(Engine.millisRunning() / 600), -1, 1, 70, 110);
 
-        camera.smoothFollow(player.getTransform());
+        camera.smoothFollow(player.getRawTransform());
     }
 
     @Override

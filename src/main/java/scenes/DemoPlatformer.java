@@ -1,15 +1,13 @@
 package scenes;
 
-import ecs.CharacterControllerGravity;
-import ecs.GameObject;
-import ecs.PointLight;
-import ecs.SpriteRenderer;
+import ecs.*;
 import graphics.Camera;
 import graphics.Color;
 import graphics.Texture;
-import physics.AABB;
-import physics.Gravity;
+import org.joml.Vector2f;
 import physics.Transform;
+import physics.collision.Shapes;
+import physics.force.ConstantForce;
 import postprocess.BloomEffect;
 import postprocess.PostProcessStep;
 import scene.Scene;
@@ -17,14 +15,13 @@ import tiles.Spritesheet;
 import tiles.TilesystemSideScroll;
 import util.Assets;
 import util.Engine;
-import util.Logger;
 import util.Utils;
 
 import static graphics.Graphics.setDefaultBackground;
 
 public class DemoPlatformer extends Scene {
     public static void main(String[] args) {
-        Engine.init("Azurite Engine Demo 2", 1.0f);
+        Engine.init(1200, 900, "Azurite Engine Demo 2", 1.0f);
         Engine.scenes().switchScene(new DemoPlatformer(), true);
         Engine.showWindow();
     }
@@ -47,51 +44,37 @@ public class DemoPlatformer extends Scene {
 
         player = new GameObject(this, "Player", new Transform(600, 600, 100, 100), 2);
         player.addComponent(new PointLight(new Color(250, 255, 181), 30));
-        player.addComponent(new AABB());
+        //player.addComponent(new AABB());
+        RigidBody playerBody = new RigidBody(Shapes.axisAlignedRectangle(0, 0, 100, 100), 1);
+        playerBody.setMask(2, true);
+        playerBody.applyForce(new ConstantForce("Gravity", new Vector2f(0, 0.010f)));
+        player.addComponent(playerBody);
         player.addComponent(new SpriteRenderer(a.getSprite(132)));
-        player.addComponent(new CharacterControllerGravity());
+        player.addComponent(new CharacterController());
 
         booper = new GameObject(this, "Booper", new Transform(800, 800, 100, 100), 2);
         booper.addComponent(new SpriteRenderer(a.getSprite(150)));
         booper.addComponent(new PointLight(new Color(255, 153, 102), 30));
-        booper.addComponent(new AABB());
-        booper.addComponent(new Gravity());
+        //TODO not done yet
+
+        RigidBody rigidBody = new RigidBody(Shapes.axisAlignedRectangle(0, 0, 100, 100), 1);
+        rigidBody.applyForce(new ConstantForce("Gravity", new Vector2f(0, 0.005f)));
+        rigidBody.setMask(2, true);
+        //booper.addComponent(rigidBody);
+
 
         bloom = new BloomEffect(PostProcessStep.Target.DEFAULT_FRAMEBUFFER);
         bloom.init();
-    }
 
-    int r;
-    int i = 1;
+    }
 
     public void update() {
         super.update();
         player.getComponent(PointLight.class).intensity = Utils.map((float) Math.sin(Engine.millisRunning() / 600), -1, 1, 80, 120);
         booper.getComponent(PointLight.class).intensity = Utils.map((float) Math.cos(Engine.millisRunning() / 600), -1, 1, 70, 110);
 
-        camera.smoothFollow(player.getTransform());
+        camera.smoothFollow(player.getRawTransform());
 
-        if (i % 400 == 0) {
-            r = Utils.randomInt(-3, 3);
-            Logger.logInfo("" + r);
-        }
-
-        if (r <= -1) {
-            booper.getTransform().addX(-50 * Engine.deltaTime());
-            if (booper.getComponent(AABB.class).isCollidingX()) {
-                booper.getComponent(Gravity.class).addVelocityY(-20);
-                Logger.logInfo("Do jump left");
-            }
-        }
-        if (r >= 1) {
-            booper.getTransform().addX(50 * Engine.deltaTime());
-            if (booper.getComponent(AABB.class).isCollidingX()) {
-                booper.getComponent(Gravity.class).addVelocityY(-20);
-                Logger.logInfo("Do jump right");
-            }
-        }
-
-        i++;
     }
 
     @Override

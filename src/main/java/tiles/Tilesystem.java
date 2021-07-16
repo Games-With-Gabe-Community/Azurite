@@ -2,8 +2,9 @@ package tiles;
 
 import ecs.GameObject;
 import ecs.SpriteRenderer;
-import physics.AABB;
+import ecs.StaticCollider;
 import physics.Transform;
+import physics.collision.Shapes;
 import scene.Scene;
 import util.Utils;
 
@@ -53,7 +54,7 @@ public class Tilesystem {
                     )));
                     if (getAt(x, y, 31) == 1) {
                         System.out.println("called");
-                        gameObjects[x][y].addComponent(new AABB());
+                        gameObjects[x][y].addComponent(new StaticCollider(Shapes.axisAlignedRectangle(0,0, width, height), 2));
                     }
                 } else if (getAt(x, y, 31) >= 256) {
                     gameObjects[x][y].addComponent(new SpriteRenderer(b.getSprite(
@@ -80,7 +81,7 @@ public class Tilesystem {
         int x = (int)worldX/w;
         int y = (int)worldY/h;
 
-        return gameObjects[x][y].getTransform();
+        return gameObjects[x][y].getReadOnlyTransform();
     }
 
 }

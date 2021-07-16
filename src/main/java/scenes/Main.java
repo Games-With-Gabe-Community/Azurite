@@ -41,7 +41,7 @@ public class Main extends Scene {
 	}
 
 	public void update() {
-		light1.getTransform().setPosition(new Vector2f(Mouse.mouseX, Mouse.mouseY));
+		light1.getReadOnlyTransform().setPosition(new Vector2f(Mouse.mouseX, Mouse.mouseY));
 	}
 
 }

@@ -1,6 +1,6 @@
 package event;
 
-import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -18,7 +18,7 @@ public class EventNode<T extends EventData> {
      * A default constructor
      */
     public EventNode() {
-        listeners = new ArrayList<>();
+        listeners = new LinkedList<>();
     }
 
     /**

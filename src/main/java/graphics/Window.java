@@ -161,7 +161,6 @@ public class Window {
             frameBeginTime = frameEndTime;
 
             Mouse.update();
-            Keyboard.update();
             // poll GLFW for input events
             glfwPollEvents();
 

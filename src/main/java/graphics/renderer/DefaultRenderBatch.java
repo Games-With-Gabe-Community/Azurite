@@ -8,14 +8,6 @@ import org.joml.Vector2f;
 import org.joml.Vector4f;
 import physics.Transform;
 
-import java.nio.ByteBuffer;
-import java.nio.ByteOrder;
-import java.nio.FloatBuffer;
-import java.util.Arrays;
-
-import static org.lwjgl.opengl.GL15.*;
-import static org.lwjgl.opengl.GL30.*;
-
 public class DefaultRenderBatch extends RenderBatch {
 	private final SpriteRenderer[] sprites;
 
@@ -71,9 +63,9 @@ public class DefaultRenderBatch extends RenderBatch {
 			}
 
 			// Load position
-			Transform spr = sprite.gameObject.getTransform();
-			data[offset] = spr.position.x + (xAdd * spr.scale.x);
-			data[offset + 1] = spr.position.y + (yAdd * spr.scale.y);
+			Transform spr = sprite.gameObject.getReadOnlyTransform();
+			data[offset] = spr.getPosition().x + (xAdd * spr.scale.x);
+			data[offset + 1] = spr.getPosition().y + (yAdd * spr.scale.y);
 
 			primitiveVertices[primitiveVerticesOffset] = data[offset];
 			primitiveVertices[primitiveVerticesOffset + 1] = data[offset + 1];

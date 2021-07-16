@@ -1,6 +1,5 @@
-package ecs;
+package graphics;
 
-import graphics.Texture;
 import org.joml.Vector2f;
 
 /**

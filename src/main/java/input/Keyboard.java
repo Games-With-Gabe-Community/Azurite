@@ -4,8 +4,6 @@ import event.EventData;
 import event.Events;
 import graphics.Window;
 
-import java.util.Arrays;
-
 import static org.lwjgl.glfw.GLFW.*;
 
 public class Keyboard {
@@ -88,13 +86,6 @@ public class Keyboard {
 
 	private static void resetKeyHeldBit(int keycode) {
 		keystateBitfields[keycode] &= 0b11111011;
-	}
-
-	/**
-	 * Reset all key states
-	 */
-	public static void update() {
-		Arrays.fill(keystateBitfields, (byte) 0);
 	}
 
 	/**
